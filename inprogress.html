@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Progress Orders - Aftab Tailors</title>
+    <link rel="stylesheet" href="inprogress.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Navigation Menu -->
+        <nav class="navigation">
+            <div class="nav-brand">AFTAB TAILORS</div>
+            <div class="nav-links">
+                <a href="customer.html" class="nav-link">👥 Customers</a>
+                <a href="order.html" class="nav-link">📝 Orders</a>
+                <a href="pending.html" class="nav-link">⏳ Pending</a>
+                <a href="inprogress.html" class="nav-link active">🔄 In Progress</a>
+                <a href="completed.html" class="nav-link">✅ Completed</a>
+                <a href="sales.html" class="nav-link">💰 Sales</a>
+                <a href="#" class="nav-link" onclick="logout()">👋 Logout</a>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <h1>Orders In Progress</h1>
+            <p>Track ongoing work and complete orders</p>
+        </header>
+
+        <!-- Stats Cards -->
+        <section class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">🔄</div>
+                <div class="stat-info">
+                    <h3 id="totalInProgress">0</h3>
+                    <p>Orders In Progress</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👷</div>
+                <div class="stat-info">
+                    <h3 id="activeWorkers">0</h3>
+                    <p>Active Workers</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-info">
+                    <h3 id="urgentInProgress">0</h3>
+                    <p>Urgent (Due in 3 Days)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- In Progress Orders List Section -->
+        <section class="list-section">
+            <div class="section-header">
+                <h2>All In Progress Orders</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterOrders('all')">All</button>
+                    <button class="filter-btn" onclick="filterOrders('urgent')">Urgent</button>
+                    <button class="filter-btn" onclick="filterOrders('normal')">Normal</button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput"
+                    placeholder="Search by order ID, customer name, worker, or phone...">
+            </div>
+
+            <!-- In Progress Orders Table -->
+            <div class="table-container">
+                <table id="inProgressTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Dress Type</th>
+                            <th>Worker</th>
+                            <th>Cutter</th>
+                            <th>Started On</th>
+                            <th>Delivery Date</th>
+                            <th>Days Left</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inProgressTableBody">
+                        <!-- Data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Mark as Completed Modal -->
+    <div id="completeOrderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mark Order as Completed</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-order-info">
+                    <strong>Order ID:</strong> <span id="modalOrderId"></span><br>
+                    <strong>Customer:</strong> <span id="modalCustomerName"></span><br>
+                    <strong>Worker:</strong> <span id="modalWorkerName"></span><br>
+                    <strong>Cutter:</strong> <span id="modalCutterName"></span><br>
+                    <strong>Dress Type:</strong> <span id="modalDressType"></span><br>
+                    <strong>Delivery Date:</strong> <span id="modalDeliveryDate"></span>
+                </p>
+
+                <div class="alert-info">
+                    ℹ️ This order will be moved to the Completed page. Customer can then collect and make payment.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel-modal" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-complete" onclick="markAsCompleted()">✓ Mark as Completed</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Worker Slip (Hidden) -->
+    <div id="printWorkerSlip" class="print-worker-slip"></div>
+
+    <!-- Load inprogress.js AFTER the HTML is loaded -->
+    <script src="inprogress.js"></script>
+</body>
+
+</html>

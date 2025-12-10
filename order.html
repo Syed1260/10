@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management - Aftab Tailors</title>
+    <link rel="stylesheet" href="order.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <div class="nav-brand">AFTAB TAILORS</div>
+            <div class="nav-links">
+                <a href="customer.html" class="nav-link">👥 Customers</a>
+                <a href="order.html" class="nav-link active">📝 Orders</a>
+                <a href="pending.html" class="nav-link">⏳ Pending</a>
+                <a href="inprogress.html" class="nav-link">🔄 In Progress</a>
+                <a href="completed.html" class="nav-link">✅ Completed</a>
+                <a href="sales.html" class="nav-link">💰 Sales</a>
+                <a href="#" class="nav-link" onclick="logout()">👋 Logout</a>
+            </div>
+        </nav>
+
+        <header class="header">
+            <h1>AFTAB TAILORS</h1>
+            <p>Order Management System - نظام آرڈر انتظامیہ</p>
+        </header>
+
+        <section class="form-section">
+            <h2 id="formTitle">Create New Order | نیا آرڈر بنائیں</h2>
+            <form id="orderForm">
+                
+                <h3 class="section-title">Order Details (آرڈر کی تفصیلات)</h3>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="orderId">Order ID (آرڈر کوڈ)</label>
+                        <input type="text" id="orderId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="orderDate">Order Date (تاریخ آرڈر)</label>
+                        <input type="text" id="orderDate" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryDate">Delivery Date (ترسیل کی تاریخ) *</label>
+                        <input type="date" id="deliveryDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dressType">Dress Type (لباس کی قسم) *</label>
+                        <select id="dressType" required>
+                            <option value="Shalwar Kameez">Shalwar Kameez (شلوار قمیض)</option>
+                            <option value="Waistcoat">Waistcoat (واسکٹ)</option>
+                            <option value="Trousers">Trousers (پتلون)</option>
+                            <option value="Other">Other (دیگر)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="customerSelect">Customer (گاہک) *</label>
+                        <select id="customerSelect" required>
+                            <option value="">-- Select Customer --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">Customer Phone (فون نمبر)</label>
+                        <input type="tel" id="customerPhone" readonly placeholder="Auto-loaded">
+                    </div>
+                    <div class="form-group">
+                        <label for="fabricType">Fabric Type (کپڑے کی قسم)</label>
+                        <input type="text" id="fabricType" placeholder="e.g., Wash & Wear">
+                    </div>
+                    <div class="form-group">
+                        <label for="fabricColor">Fabric Color (کپڑے کا رنگ)</label>
+                        <input type="text" id="fabricColor" placeholder="e.g., White / Black">
+                    </div>
+                </div>
+
+                <div id="measurementsSection" style="display:none;">
+                    <h3 class="section-title">Measurements (پیمائش) - Auto-Loaded</h3>
+                    <div class="measurements-grid">
+                        <div class="form-group">
+                            <label for="field1">1. قمیض (Length)</label>
+                            <input type="number" id="field1" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field2">2. تیرہ (Shoulder)</label>
+                            <input type="number" id="field2" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field3">3. آستین (Sleeve)</label>
+                            <input type="number" id="field3" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field4">4. گلا (Neck)</label>
+                            <input type="number" id="field4" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field5">5. چهاتی (Chest)</label>
+                            <input type="number" id="field5" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field6">6. چھوڑائی (Lower Hip)</label>
+                            <input type="number" id="field6" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field7">7. دامن (Bottom)</label>
+                            <input type="number" id="field7" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field8">8. شلوار (Length)</label>
+                            <input type="number" id="field8" step="0.25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field9">9. پانچہ (Cuff)</label>
+                            <input type="number" id="field9" step="0.25" readonly>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">Design Details (ڈیزائن)</h3>
+                    <div class="measurements-grid">
+                        <!-- Fields 10-47 -->
+                        <div class="form-group">
+                            <label for="field10">10. کالر</label>
+                            <input type="text" id="field10" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field11">11. باف بین گول</label>
+                            <input type="text" id="field11" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field12">12. باف بین چورس</label>
+                            <input type="text" id="field12" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field13">13. شیروانی</label>
+                            <input type="text" id="field13" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field14">14. سامنے جیب</label>
+                            <input type="text" id="field14" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field15">15. سائیڈ جیب</label>
+                            <input type="text" id="field15" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field16">16. کف گول</label>
+                            <input type="text" id="field16" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field17">17. کف چورس</label>
+                            <input type="text" id="field17" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field18">18. کف کونا کاٹ</label>
+                            <input type="text" id="field18" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field19">19. اسٹڈ کف</label>
+                            <input type="text" id="field19" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field20">20. سادہ بازوں بکرم</label>
+                            <input type="text" id="field20" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field21">21. سادہ بازوں کنی</label>
+                            <input type="text" id="field21" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field22">22. پٹی سائز</label>
+                            <input type="text" id="field22" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field23">23. سادہ پٹی</label>
+                            <input type="text" id="field23" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field24">24. پٹی کاج</label>
+                            <input type="text" id="field24" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field25">25. موڑا</label>
+                            <input type="text" id="field25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field26">26. شلوار 6 درز</label>
+                            <input type="text" id="field26" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field27">27. شلوار 2 درز</label>
+                            <input type="text" id="field27" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field28">28. شلوار فٹ</label>
+                            <input type="text" id="field28" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field29">29. دامن گول</label>
+                            <input type="text" id="field29" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field30">30. دامن چورس</label>
+                            <input type="text" id="field30" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field31">31. کف پلیٹ</label>
+                            <input type="text" id="field31" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field32">32. لیبل</label>
+                            <input type="text" id="field32" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field33">33. چاک پٹی فٹ</label>
+                            <input type="text" id="field33" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field34">34. چاک پٹی کاج</label>
+                            <input type="text" id="field34" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field35">35. کف ڈبل کاج</label>
+                            <input type="text" id="field35" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field36">36. اسٹڈ کاج</label>
+                            <input type="text" id="field36" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field37">37. سادہ سلائی</label>
+                            <input type="text" id="field37" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field38">38. ڈبل سلائی</label>
+                            <input type="text" id="field38" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field39">39. سلائی چمکدار</label>
+                            <input type="text" id="field39" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field40">40. بٹن میٹل</label>
+                            <input type="text" id="field40" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field41">41. شلوار جیب</label>
+                            <input type="text" id="field41" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field42">42. اندر جیب</label>
+                            <input type="text" id="field42" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field43">43. کالر فرینچ</label>
+                            <input type="text" id="field43" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field44">44. کالر گول نوک</label>
+                            <input type="text" id="field44" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field45">45. رنگ بٹن</label>
+                            <input type="text" id="field45" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field46">46. سپرٹ پٹائی</label>
+                            <input type="text" id="field46" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="field47">47. فینسی بٹن</label>
+                            <input type="text" id="field47" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Pricing (قیمت)</h3>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="stitchingCharges">Stitching Charges *</label>
+                        <input type="number" id="stitchingCharges" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="totalAmount">Total Amount</label>
+                        <input type="number" id="totalAmount" step="0.01" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="advancePaid">Advance Paid</label>
+                        <input type="number" id="advancePaid" step="0.01" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="remainingAmount">Remaining</label>
+                        <input type="number" id="remainingAmount" step="0.01" readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialNotes">Special Notes</label>
+                    <textarea id="specialNotes" rows="3"></textarea>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-save" id="saveBtn">Create Order</button>
+                    <button type="button" class="btn btn-clear" id="clearBtn">Clear</button>
+                    <button type="button" class="btn btn-cancel" id="cancelBtn" style="display:none;">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="list-section">
+            <h2>Order List</h2>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search orders...">
+            </div>
+
+            <div class="table-container">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Dress</th>
+                            <th>Order Date</th>
+                            <th>Delivery</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Load order.js AFTER HTML -->
+    <script src="order.js"></script>
+</body>
+</html>

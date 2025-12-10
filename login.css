@@ -1,0 +1,93 @@
+/* Styling for Login Page */
+
+/* Borrowing from main CSS for consistency */
+body {
+    background: linear-gradient(135deg, #fffaf0 0%, #fff8dc 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-container {
+    max-width: 400px;
+    width: 90%;
+    background: #fffef9;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border: 2px solid #d4af37;
+    text-align: center;
+}
+
+.login-header h1 {
+    color: #654321;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    color: #8b6914;
+    font-size: 1.1em;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0e68c;
+    padding-bottom: 15px;
+}
+
+.login-form .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #654321;
+    font-weight: 600;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #f0e68c;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #fffef9;
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #d4af37 0%, #c19a2e 100%);
+    color: white;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background: linear-gradient(135deg, #c19a2e 0%, #a88522 100%);
+    transform: translateY(-2px);
+}
+
+.error-message {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #c62828;
+    font-weight: 600;
+}

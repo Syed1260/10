@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Orders - Aftab Tailors</title>
+    <link rel="stylesheet" href="pending.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Navigation Menu -->
+        <nav class="navigation">
+            <div class="nav-brand">AFTAB TAILORS</div>
+            <div class="nav-links">
+                <a href="customer.html" class="nav-link">👥 Customers</a>
+                <a href="order.html" class="nav-link">📝 Orders</a>
+                <a href="pending.html" class="nav-link active">⏳ Pending</a>
+                <a href="inprogress.html" class="nav-link">🔄 In Progress</a>
+                <a href="completed.html" class="nav-link">✅ Completed</a>
+                <a href="sales.html" class="nav-link">💰 Sales</a>
+                <a href="#" class="nav-link" onclick="logout()">👋 Logout</a>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <h1>Pending Orders</h1>
+            <p>Assign workers and start production</p>
+        </header>
+
+        <!-- Stats Cards -->
+        <section class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <h3 id="totalPending">0</h3>
+                    <p>Total Pending Orders</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <h3 id="urgentOrders">0</h3>
+                    <p>Urgent Deliveries (Within 3 Days)</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h3 id="totalPendingAmount">Rs. 0</h3>
+                    <p>Total Pending Amount</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pending Orders List Section -->
+        <section class="list-section">
+            <div class="section-header">
+                <h2>All Pending Orders</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterOrders('all')">All</button>
+                    <button class="filter-btn" onclick="filterOrders('urgent')">Urgent</button>
+                    <button class="filter-btn" onclick="filterOrders('normal')">Normal</button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search by order ID, customer name, or phone...">
+            </div>
+
+            <!-- Pending Orders Table -->
+            <div class="table-container">
+                <table id="pendingOrdersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Dress Type</th>
+                            <th>Order Date</th>
+                            <th>Delivery Date</th>
+                            <th>Days Left</th>
+                            <th>Total Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingOrdersTableBody">
+                        <!-- Data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Assign Worker Modal -->
+    <div id="assignWorkerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Assign Worker & Cutter - Start Production</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-order-info">
+                    <strong>Order ID:</strong> <span id="modalOrderId"></span><br>
+                    <strong>Customer:</strong> <span id="modalCustomerName"></span><br>
+                    <strong>Dress Type:</strong> <span id="modalDressType"></span><br>
+                    <strong>Delivery Date:</strong> <span id="modalDeliveryDate"></span>
+                </p>
+
+                <div class="form-group">
+                    <label for="cutterName">Cutter Name *</label>
+                    <input type="text" id="cutterName" placeholder="Enter cutter name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="workerName">Worker Name *</label>
+                    <input type="text" id="workerName" placeholder="Enter worker name" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel-modal" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-assign" onclick="assignWorkerAndStart()">Assign & Start Production</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load pending.js AFTER the HTML is loaded -->
+    <script src="pending.js"></script>
+</body>
+
+</html>

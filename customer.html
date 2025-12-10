@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management - Aftab Tailors</title>
+    <link rel="stylesheet" href="customer.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <div class="nav-brand">AFTAB TAILORS</div>
+            <div class="nav-links">
+                <a href="customer.html" class="nav-link active">👥 Customers</a>
+                <a href="order.html" class="nav-link">📋 Orders</a>
+                <a href="pending.html" class="nav-link">⏳ Pending</a>
+                <a href="inprogress.html" class="nav-link">🔄 In Progress</a>
+                <a href="completed.html" class="nav-link">✅ Completed</a>
+                <a href="sales.html" class="nav-link">💰 Sales</a>
+                <a href="#" class="nav-link" onclick="logout()">👋 Logout</a>
+            </div>
+        </nav>
+
+        <header class="header">
+            <h1>AFTAB TAILORS</h1>
+            <p>Customer Management System - نظام انتظامی</p>
+        </header>
+
+        <section class="form-section">
+            <h2 id="formTitle">Add New Customer | نیا گاہک شامل کریں</h2>
+            <form id="customerForm">
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="customerName">Customer Name (گاہک کا نام) *</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number (فون نمبر) *</label>
+                        <input type="tel" id="phoneNumber" required>
+                    </div>
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="customerId">Customer ID (گاہک کا کوڈ)</label>
+                        <input type="text" id="customerId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="regDate">Registration Date (اندراج کی تاریخ)</label>
+                        <input type="text" id="regDate" readonly>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Measurements (پیمائش) - Inches</h3>
+                <div class="measurements-grid">
+                    <div class="form-group">
+                        <label for="field1">1. قمیض (Kameez/Shirt Length)</label>
+                        <input type="number" id="field1" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field2">2. تیرہ (Shoulder/Back Width)</label>
+                        <input type="number" id="field2" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field3">3. آستین (Sleeve Length)</label>
+                        <input type="number" id="field3" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field4">4. گلا (Neck)</label>
+                        <input type="number" id="field4" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field5">5. چهاتی (Chest)</label>
+                        <input type="number" id="field5" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field6">6. چھوڑائی (Lower Hip/Flare)</label>
+                        <input type="number" id="field6" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field7">7. دامن (Hem/Bottom Width)</label>
+                        <input type="number" id="field7" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field8">8. شلوار (Shalwar/Trousers Length)</label>
+                        <input type="number" id="field8" step="0.25" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="field9">9. پانچہ (Trouser Cuff/Ankle)</label>
+                        <input type="number" id="field9" step="0.25" placeholder="0.00">
+                    </div>
+                </div>
+
+                <h3 class="section-title">Design & Style Details (ڈیزائن اور سٹائل) - All Options</h3>
+                <div class="measurements-grid">
+                    <div class="form-group">
+                        <label for="field10">10. کالر (Collar)</label>
+                        <input type="text" id="field10" placeholder="Enter Details">
+                    </div>
+                    <div class="form-group">
+                        <label for="field11">11. باف بین گول (Double Cuff Round)</label>
+                        <input type="text" id="field11" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field12">12. باف بین چورس (Double Cuff Square)</label>
+                        <input type="text" id="field12" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field13">13. شیروانی (Sherwani Style)</label>
+                        <input type="text" id="field13" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field14">14. سامنے جیب (Front Pocket)</label>
+                        <input type="text" id="field14" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field15">15. سائیڈ جیب (Side Pocket)</label>
+                        <input type="text" id="field15" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field16">16. کف گول (Cuff Round)</label>
+                        <input type="text" id="field16" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field17">17. کف چورس (Cuff Square)</label>
+                        <input type="text" id="field17" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field18">18. کف کونا کاٹ (Cuff Corner Cut)</label>
+                        <input type="text" id="field18" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field19">19. اسٹڈ کف (Stud Cuff)</label>
+                        <input type="text" id="field19" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field20">20. سادہ بازوں بکرم (Simple Sleeves w/ Interlining)</label>
+                        <input type="text" id="field20" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field21">21. سادہ بازوں کنی (Simple Sleeves cuff/key)</label>
+                        <input type="text" id="field21" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field22">22. پٹی سائز (Patti Size)</label>
+                        <input type="text" id="field22" placeholder="Enter Size">
+                    </div>
+                    <div class="form-group">
+                        <label for="field23">23. سادہ پٹی (Simple Placket)</label>
+                        <input type="text" id="field23" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field24">24. پٹی کاج (Placket Buttonhole)</label>
+                        <input type="text" id="field24" placeholder="Enter Details">
+                    </div>
+                    <div class="form-group">
+                        <label for="field25">25. موڑا (Mora)</label>
+                        <input type="text" id="field25" placeholder="Enter Width">
+                    </div>
+                    <div class="form-group">
+                        <label for="field26">26. شلوار 6 درز (Shalwar 6 folds/darts)</label>
+                        <input type="text" id="field26" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field27">27. شلوار 2 درز (Shalwar 2 folds/darts)</label>
+                        <input type="text" id="field27" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field28">28. شلوار فٹ (Shalwar Fit)</label>
+                        <input type="text" id="field28" placeholder="Enter Fit Type">
+                    </div>
+                    <div class="form-group">
+                        <label for="field29">29. دامن گول</label>
+                        <input type="text" id="field29" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field30">30. دامن چورس</label>
+                        <input type="text" id="field30" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field31">31. کف پلیٹ</label>
+                        <input type="text" id="field31" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field32">32. لیبل</label>
+                        <input type="text" id="field32" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field33">33. چاک پٹی فٹ</label>
+                        <input type="text" id="field33" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field34">34. چاک پٹی کاج</label>
+                        <input type="text" id="field34" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field35">35. کف ڈبل کاج</label>
+                        <input type="text" id="field35" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field36">36. اسٹڈ کاج</label>
+                        <input type="text" id="field36" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field37">37. سادہ سلائی</label>
+                        <input type="text" id="field37" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field38">38. ڈبل سلائی</label>
+                        <input type="text" id="field38" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field39">39. سلائی چمکدار</label>
+                        <input type="text" id="field39" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field40">40. بٹن میٹل</label>
+                        <input type="text" id="field40" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field41">41. شلوار جیب</label>
+                        <input type="text" id="field41" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field42">42. اندر جیب</label>
+                        <input type="text" id="field42" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field43">43. کالر فرینچ</label>
+                        <input type="text" id="field43" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field44">44. کالر گول نوک</label>
+                        <input type="text" id="field44" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field45">45. رنگ بٹن</label>
+                        <input type="text" id="field45" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field46">46. سپرٹ پٹائی</label>
+                        <input type="text" id="field46" placeholder="Y/N">
+                    </div>
+                    <div class="form-group">
+                        <label for="field47">47. فینسی بٹن</label>
+                        <input type="text" id="field47" placeholder="Y/N">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Special Notes (خصوصی ہدایات)</label>
+                    <textarea id="notes" rows="3" placeholder="کوئی بھی خصوصی ہدایات یہاں لکھیں..."></textarea>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-save" id="saveBtn">Save Customer (محفوظ کریں)</button>
+                    <button type="button" class="btn btn-clear" id="clearBtn">Clear Form (صاف کریں)</button>
+                    <button type="button" class="btn btn-cancel" id="cancelBtn" style="display:none;">Cancel Edit (ترمیم منسوخ)</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="list-section">
+            <h2>Customer List (گاہکوں کی فہرست)</h2>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search by name or phone number... (نام یا فون نمبر سے تلاش کریں)">
+            </div>
+
+            <div class="table-container">
+                <table id="customerTable">
+                    <thead>
+                        <tr>
+                            <th>ID (کوڈ)</th>
+                            <th>Name (نام)</th>
+                            <th>Phone (فون)</th>
+                            <th>Registration Date (تاریخ)</th>
+                            <th>Actions (اقدامات)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Load customer.js AFTER the HTML is loaded -->
+    <script src="customer.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Aftab Tailors</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-container">
+        <header class="login-header">
+            <h1>AFTAB TAILORS</h1>
+            <p>Admin Login | منتظم لاگ ان</p>
+        </header>
+
+        <form id="loginForm" class="login-form">
+            <div id="errorMessage" class="error-message" style="display: none;">
+                Invalid Username or Password! (صارف نام یا پاس ورڈ غلط ہے)
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Email (صارف ای میل)</label>
+                <input type="email" id="username" required placeholder="Enter Email (e.g., admin@tailor.com)">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password (پاس ورڈ)</label>
+                <input type="password" id="password" required placeholder="Enter Password">
+            </div>
+
+            <button type="submit" class="btn btn-login">Login | لاگ ان کریں</button>
+        </form>
+        
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

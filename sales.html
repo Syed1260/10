@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Record - Aftab Tailors</title>
+    <link rel="stylesheet" href="sales.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <div class="nav-brand">AFTAB TAILORS</div>
+            <div class="nav-links">
+                <a href="customer.html" class="nav-link">👥 Customers</a>
+                <a href="order.html" class="nav-link">📝 Orders</a>
+                <a href="pending.html" class="nav-link">⏳ Pending</a>
+                <a href="inprogress.html" class="nav-link">🔄 In Progress</a>
+                <a href="completed.html" class="nav-link">✅ Completed</a>
+                <a href="sales.html" class="nav-link active">💰 Sales</a>
+                <a href="#" class="nav-link" onclick="logout()">👋 Logout</a>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <h1>Sales Record & Reports</h1>
+            <p>Track your revenue and business performance</p>
+        </header>
+
+        <!-- Date Filter Section -->
+        <section class="filter-section">
+            <div class="filter-header">
+                <h3>Select Period</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-apply" onclick="reloadData()">🔄 Refresh Data</button>
+                    <button class="btn btn-print" onclick="printReport()">🖨️ Print Report</button>
+                </div>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterByPeriod('today')">Today</button>
+                <button class="filter-btn" onclick="filterByPeriod('week')">This Week</button>
+                <button class="filter-btn" onclick="filterByPeriod('month')">This Month</button>
+                <button class="filter-btn" onclick="filterByPeriod('year')">This Year</button>
+                <button class="filter-btn" onclick="filterByPeriod('all')">All Time</button>
+            </div>
+
+            <!-- Custom Date Range -->
+            <div class="custom-date-section">
+                <h4>Custom Date Range:</h4>
+                <div class="date-inputs">
+                    <div class="date-group">
+                        <label for="startDate">From:</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="date-group">
+                        <label for="endDate">To:</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <button class="btn btn-apply" onclick="applyCustomDateRange()">Apply</button>
+                </div>
+            </div>
+
+            <div class="current-period">
+                <strong>Showing:</strong> <span id="currentPeriodText">All Time</span>
+            </div>
+        </section>
+
+        <!-- Revenue Summary Cards -->
+        <section class="stats-section">
+            <div class="stat-card revenue-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <p class="stat-label">Total Revenue</p>
+                    <h3 id="totalRevenue">Rs. 0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card paid-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <p class="stat-label">Paid Amount</p>
+                    <h3 id="paidAmount">Rs. 0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card unpaid-card">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <p class="stat-label">Unpaid Amount</p>
+                    <h3 id="unpaidAmount">Rs. 0</h3>
+                </div>
+            </div>
+
+            <div class="stat-card advance-card">
+                <div class="stat-icon">💵</div>
+                <div class="stat-info">
+                    <p class="stat-label">Advance Received</p>
+                    <h3 id="advanceReceived">Rs. 0</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Order Statistics -->
+        <section class="order-stats-section">
+            <h2>Order Statistics</h2>
+            <div class="order-stats-grid">
+                <div class="order-stat-card">
+                    <div class="order-stat-icon">📊</div>
+                    <h4 id="totalOrders">0</h4>
+                    <p>Total Orders</p>
+                </div>
+                <div class="order-stat-card pending-stat">
+                    <div class="order-stat-icon">⏳</div>
+                    <h4 id="pendingOrders">0</h4>
+                    <p>Pending Orders</p>
+                </div>
+                <div class="order-stat-card progress-stat">
+                    <div class="order-stat-icon">🔄</div>
+                    <h4 id="inProgressOrders">0</h4>
+                    <p>In Progress</p>
+                </div>
+                <div class="order-stat-card completed-stat">
+                    <div class="order-stat-icon">✅</div>
+                    <h4 id="completedOrders">0</h4>
+                    <p>Completed</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders Breakdown - UPDATED WITH TOP WORKERS & CUTTERS -->
+        <section class="breakdown-section">
+            <h2>Orders Breakdown</h2>
+            <div class="breakdown-grid">
+                <div class="breakdown-card">
+                    <h3>By Dress Type</h3>
+                    <div id="dressTypeBreakdown" class="breakdown-list">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <div class="breakdown-card">
+                    <h3>By Payment Status</h3>
+                    <div id="paymentStatusBreakdown" class="breakdown-list">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <div class="breakdown-card">
+                    <h3>👷 Top Workers</h3>
+                    <div id="topWorkersBreakdown" class="breakdown-list">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <div class="breakdown-card">
+                    <h3>✂️ Top Cutters</h3>
+                    <div id="topCuttersBreakdown" class="breakdown-list">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Orders Table -->
+        <section class="list-section">
+            <h2>Detailed Order List</h2>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search orders...">
+            </div>
+
+            <!-- Orders Table -->
+            <div class="table-container">
+                <table id="salesTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Dress Type</th>
+                            <th>Status</th>
+                            <th>Total Amount</th>
+                            <th>Advance</th>
+                            <th>Remaining</th>
+                            <th>Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesTableBody">
+                        <!-- Data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Print Report (Hidden) -->
+    <div id="printReport" class="print-report">
+        <!-- Report content will be inserted here by JavaScript -->
+    </div>
+
+    <!-- Load sales.js AFTER the HTML is loaded -->
+    <script src="sales.js"></script>
+</body>
+
+</html>

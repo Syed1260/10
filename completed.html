@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completed Orders - Aftab Tailors</title>
+    <link rel="stylesheet" href="completed.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navigation">
+            <div class="nav-brand">AFTAB TAILORS</div>
+            <div class="nav-links">
+                <a href="customer.html" class="nav-link">👥 Customers</a>
+                <a href="order.html" class="nav-link">📝 Orders</a>
+                <a href="pending.html" class="nav-link">⏳ Pending</a>
+                <a href="inprogress.html" class="nav-link">🔄 In Progress</a>
+                <a href="completed.html" class="nav-link active">✅ Completed</a>
+                <a href="sales.html" class="nav-link">💰 Sales</a>
+                <a href="#" class="nav-link" onclick="logout()">👋 Logout</a>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <h1>Completed Orders</h1>
+            <p>Manage deliveries and payments</p>
+        </header>
+
+        <!-- Stats Cards -->
+        <section class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3 id="totalCompleted">0</h3>
+                    <p>Total Completed Orders</p>
+                </div>
+            </div>
+            <div class="stat-card stat-paid">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h3 id="totalPaid">0</h3>
+                    <p>Delivered & Paid</p>
+                </div>
+            </div>
+            <div class="stat-card stat-unpaid">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <h3 id="totalUnpaid">0</h3>
+                    <p>Delivered & Unpaid</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💵</div>
+                <div class="stat-info">
+                    <h3 id="pendingAmount">Rs. 0</h3>
+                    <p>Pending Payment Amount</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Completed Orders List Section -->
+        <section class="list-section">
+            <div class="section-header">
+                <h2>All Completed Orders</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterOrders('all')">All</button>
+                    <button class="filter-btn" onclick="filterOrders('paid')">Paid</button>
+                    <button class="filter-btn" onclick="filterOrders('unpaid')">Unpaid</button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput"
+                    placeholder="Search by order ID, customer name, worker, or phone...">
+            </div>
+
+            <!-- Completed Orders Table -->
+            <div class="table-container">
+                <table id="completedTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Dress Type</th>
+                            <th>Worker</th>
+                            <th>Delivery Date</th>
+                            <th>Completed On</th>
+                            <th>Total Amount</th>
+                            <th>Remaining</th>
+                            <th>Payment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="completedTableBody">
+                        <!-- Data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Delivery & Payment Modal -->
+    <div id="deliveryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mark Delivery & Payment Status</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-order-info">
+                    <strong>Order ID:</strong> <span id="modalOrderId"></span><br>
+                    <strong>Customer:</strong> <span id="modalCustomerName"></span><br>
+                    <strong>Worker:</strong> <span id="modalWorkerName"></span><br>
+                    <strong>Total Amount:</strong> <span id="modalTotalAmount"></span><br>
+                    <strong>Advance Paid:</strong> <span id="modalAdvance"></span><br>
+                    <strong>Remaining:</strong> <span id="modalRemaining"
+                        style="font-size: 1.2em; color: #d4af37;"></span>
+                </p>
+
+                <div class="payment-options">
+                    <h3>Choose Delivery Status:</h3>
+                    <div class="option-buttons">
+                        <button class="option-btn btn-paid" onclick="markAsDelivered('paid')">
+                            <span class="option-icon">✅</span>
+                            <span class="option-text">Delivered & Paid</span>
+                            <span class="option-desc">Customer paid full amount</span>
+                        </button>
+                        <button class="option-btn btn-unpaid" onclick="markAsDelivered('unpaid')">
+                            <span class="option-icon">⚠️</span>
+                            <span class="option-text">Delivered & Unpaid</span>
+                            <span class="option-desc">Customer took order, will pay later</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="deliveryNotes">Delivery Notes (Optional)</label>
+                    <textarea id="deliveryNotes" rows="2"
+                        placeholder="Any notes about delivery or payment..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel-modal" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark as Paid Modal -->
+    <div id="markPaidModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mark as Paid</h2>
+                <span class="close-modal" onclick="closePaidModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-order-info">
+                    <strong>Order ID:</strong> <span id="paidModalOrderId"></span><br>
+                    <strong>Customer:</strong> <span id="paidModalCustomerName"></span><br>
+                    <strong>Remaining Amount:</strong> <span id="paidModalRemaining"
+                        style="font-size: 1.3em; color: #d4af37;"></span>
+                </p>
+
+                <div class="alert-success">
+                    ✓ Customer will pay the remaining amount now.
+                </div>
+
+                <div class="form-group">
+                    <label for="paymentNotes">Payment Notes (Optional)</label>
+                    <textarea id="paymentNotes" rows="2"
+                        placeholder="Payment method, receipt number, etc..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel-modal" onclick="closePaidModal()">Cancel</button>
+                <button class="btn btn-mark-paid" onclick="confirmMarkAsPaid()">✓ Confirm Payment Received</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load completed.js AFTER the HTML is loaded -->
+    <script src="completed.js"></script>
+</body>
+
+</html>
