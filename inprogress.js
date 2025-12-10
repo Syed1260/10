@@ -264,6 +264,7 @@ function displayInProgressOrders(ordersToDisplay) {
 }
 
 // ENHANCED Print Worker Slip - Shows ALL Details including 47 fields, worker & cutter (NO PRICING)
+// ENHANCED Print Worker Slip - Matches sample format with BOLD text and BOXES
 function printWorkerSlip(orderId) {
     const order = allOrders.find(o => o.orderId === orderId);
     if (!order) {
@@ -277,98 +278,89 @@ function printWorkerSlip(orderId) {
         <div class="slip-header">
             <div class="slip-title">AFTAB TAILORS</div>
             <div class="slip-subtitle">Worker Slip - پرچی</div>
+            <div style="font-size: 9px; margin-top: 2px;">${new Date().toLocaleDateString('en-GB')}</div>
         </div>
         
-        <div class="slip-section">
-            <div class="slip-row">
-                <span class="slip-label">Order ID (آرڈر کوڈ):</span>
-                <span class="slip-value">${order.orderId}</span>
+        <div class="slip-basic-info">
+            <div class="slip-info-row">
+                <span class="slip-info-label">Order ID:</span>
+                <span class="slip-info-value">${order.orderId}</span>
             </div>
-            <div class="slip-row">
-                <span class="slip-label">Customer (گاہک):</span>
-                <span class="slip-value">${order.customerName}</span>
+            <div class="slip-info-row">
+                <span class="slip-info-label">Customer:</span>
+                <span class="slip-info-value">${order.customerName}</span>
             </div>
-            <div class="slip-row">
-                <span class="slip-label">Phone (فون):</span>
-                <span class="slip-value">${order.customerPhone}</span>
+            <div class="slip-info-row">
+                <span class="slip-info-label">Phone:</span>
+                <span class="slip-info-value">${order.customerPhone}</span>
             </div>
-            <div class="slip-row">
-                <span class="slip-label">Dress Type (لباس):</span>
-                <span class="slip-value">${order.dressType}</span>
+            <div class="slip-info-row">
+                <span class="slip-info-label">Dress:</span>
+                <span class="slip-info-value">${order.dressType}</span>
             </div>
-            <div class="slip-row">
-                <span class="slip-label">Order Date (تاریخ):</span>
-                <span class="slip-value">${order.orderDate}</span>
-            </div>
-            <div class="slip-row">
-                <span class="slip-label">Delivery Date (ترسیل):</span>
-                <span class="slip-value">${order.deliveryDate}</span>
+            <div class="slip-info-row">
+                <span class="slip-info-label">Delivery:</span>
+                <span class="slip-info-value">${order.deliveryDate}</span>
             </div>
         </div>
         
-        <div class="slip-section">
-            <div class="worker-name-highlight">
-                👷 WORKER: ${order.workerName || 'N/A'}
-            </div>
-            <div class="worker-name-highlight">
-                ✂️ CUTTER: ${order.cutterName || 'N/A'}
-            </div>
-            <div class="slip-row">
-                <span class="slip-label">Work Started (شروع):</span>
-                <span class="slip-value">${order.workStartDate || 'N/A'}</span>
-            </div>
+        <div class="worker-cutter-box">
+            <div class="worker-cutter-row">👷 WORKER: ${order.workerName || 'N/A'}</div>
+            <div class="worker-cutter-row">✂️ CUTTER: ${order.cutterName || 'N/A'}</div>
         </div>
     `;
     
     // Add measurements if available
     if (order.measurements && order.measurements.qameez) {
-        console.log("✅ Measurements found, adding all fields to slip");
+        console.log("✅ Measurements found, adding to slip");
         
-        // QAMEEZ & SHALWAR MEASUREMENTS (Fields 1-9)
+        // QAMEEZ & SHALWAR MEASUREMENTS (Fields 1-9) in TWO COLUMNS
         slipContent += `
-            <div class="slip-section">
-                <div class="slip-section-title">قمیض و شلوار - QAMEEZ & SHALWAR</div>
-                <div class="slip-row">
-                    <span class="slip-label">1. ${fieldLabels[0]}:</span>
-                    <span class="slip-value">${order.measurements.qameez.length || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">2. ${fieldLabels[1]}:</span>
-                    <span class="slip-value">${order.measurements.qameez.shoulder || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">3. ${fieldLabels[2]}:</span>
-                    <span class="slip-value">${order.measurements.qameez.sleeve || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">4. ${fieldLabels[3]}:</span>
-                    <span class="slip-value">${order.measurements.qameez.neck || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">5. ${fieldLabels[4]}:</span>
-                    <span class="slip-value">${order.measurements.qameez.chest || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">6. ${fieldLabels[5]}:</span>
-                    <span class="slip-value">${order.measurements.qameez.lowerHip || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">7. ${fieldLabels[6]}:</span>
-                    <span class="slip-value">${order.measurements.qameez.bottom || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">8. ${fieldLabels[7]}:</span>
-                    <span class="slip-value">${order.measurements.shalwar.length || 'N/A'}"</span>
-                </div>
-                <div class="slip-row">
-                    <span class="slip-label">9. ${fieldLabels[8]}:</span>
-                    <span class="slip-value">${order.measurements.shalwar.bottom || 'N/A'}"</span>
+            <div class="measurements-section">
+                <div class="measurements-title">قمیض و شلوار - MEASUREMENTS</div>
+                <div class="measurements-grid">
+                    <div class="measurement-box">
+                        <span class="measurement-label">1. قمیض</span>
+                        <span class="measurement-value">${order.measurements.qameez.length || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">2. تیرہ</span>
+                        <span class="measurement-value">${order.measurements.qameez.shoulder || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">3. آستین</span>
+                        <span class="measurement-value">${order.measurements.qameez.sleeve || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">4. گلا</span>
+                        <span class="measurement-value">${order.measurements.qameez.neck || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">5. چهاتی</span>
+                        <span class="measurement-value">${order.measurements.qameez.chest || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">6. چھوڑائی</span>
+                        <span class="measurement-value">${order.measurements.qameez.lowerHip || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">7. دامن</span>
+                        <span class="measurement-value">${order.measurements.qameez.bottom || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">8. شلوار</span>
+                        <span class="measurement-value">${order.measurements.shalwar.length || '0'}"</span>
+                    </div>
+                    <div class="measurement-box">
+                        <span class="measurement-label">9. پانچہ</span>
+                        <span class="measurement-value">${order.measurements.shalwar.bottom || '0'}"</span>
+                    </div>
                 </div>
             </div>
         `;
         
-        // DESIGN DETAILS (Fields 10-47) - Show ALL fields that have values
-        let designDetails = '';
+        // DESIGN DETAILS (Fields 10-47) - Show only fields with values
+        let designItems = '';
         let hasDesign = false;
         
         for (let i = 10; i <= 47; i++) {
@@ -376,59 +368,52 @@ function printWorkerSlip(orderId) {
             const value = order.measurements.design?.[fieldKey];
             if (value && value.trim() !== '' && value !== '0') {
                 hasDesign = true;
-                designDetails += `
-                    <div class="slip-row">
-                        <span class="slip-label">${i}. ${fieldLabels[i-1]}:</span>
-                        <span class="slip-value">${value}</span>
+                const label = fieldLabels[i-1].split('(')[0].trim(); // Get short label
+                designItems += `
+                    <div class="design-item">
+                        <span class="design-item-label">${i}. ${label}</span>
+                        <span class="design-item-value">${value}</span>
                     </div>
                 `;
             }
         }
         
         if (hasDesign) {
-            console.log("✅ Design details found, adding all fields to slip");
+            console.log("✅ Design details found, adding to slip");
             slipContent += `
-                <div class="slip-section">
-                    <div class="slip-section-title">ڈیزائن - DESIGN DETAILS</div>
-                    ${designDetails}
+                <div class="design-section">
+                    <div class="design-title">ڈیزائن - DESIGN DETAILS</div>
+                    <div class="design-grid">
+                        ${designItems}
+                    </div>
                 </div>
             `;
         }
     } else {
         console.log("⚠️ No measurements found for this order");
-        slipContent += `
-            <div class="slip-section">
-                <div class="slip-section-title">NOTE</div>
-                <div style="text-align: center; padding: 8px; font-size: 8px;">
-                    No measurements available for this order type
-                </div>
-            </div>
-        `;
     }
     
     // Add fabric details
     slipContent += `
-        <div class="slip-section">
-            <div class="slip-section-title">کپڑا - FABRIC</div>
-            <div class="slip-row">
-                <span class="slip-label">Type (قسم):</span>
-                <span class="slip-value">${order.fabricType || 'N/A'}</span>
+        <div class="fabric-section">
+            <div class="fabric-title">کپڑا - FABRIC</div>
+            <div class="fabric-row">
+                <span style="font-weight: bold;">Type:</span>
+                <span>${order.fabricType || 'N/A'}</span>
             </div>
-            <div class="slip-row">
-                <span class="slip-label">Color (رنگ):</span>
-                <span class="slip-value">${order.fabricColor || 'N/A'}</span>
+            <div class="fabric-row">
+                <span style="font-weight: bold;">Color:</span>
+                <span>${order.fabricColor || 'N/A'}</span>
             </div>
         </div>
     `;
     
-    // PRICING SECTION REMOVED - No prices on worker slip
-    
     // Add special notes if available
     if (order.specialNotes && order.specialNotes.trim() !== '') {
         slipContent += `
-            <div class="slip-section">
-                <div class="slip-section-title">ہدایات - SPECIAL NOTES</div>
-                <div style="font-size: 7.5px; line-height: 1.3; padding: 3px 0; white-space: pre-wrap; word-wrap: break-word;">${order.specialNotes}</div>
+            <div class="notes-section">
+                <div class="notes-title">ہدایات - NOTES</div>
+                <div class="notes-content">${order.specialNotes}</div>
             </div>
         `;
     }
@@ -436,8 +421,7 @@ function printWorkerSlip(orderId) {
     // Add footer
     slipContent += `
         <div class="slip-footer">
-            Quality Work Required - معیاری کام ضروری<br>
-            شکریہ - Thank You!
+            Quality Work Required - معیاری کام ضروری
         </div>
     `;
     
@@ -454,105 +438,6 @@ function printWorkerSlip(orderId) {
             console.log("✅ Print completed");
         }, 100);
     }, 100);
-}
-
-// Filter orders
-function filterOrders(filterType) {
-    currentFilter = filterType;
-    
-    // Update active button
-    const buttons = document.querySelectorAll('.filter-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    let filtered = [...inProgressOrders];
-    
-    if (filterType === 'urgent') {
-        filtered = inProgressOrders.filter(order => getDaysLeft(order.deliveryDate) <= 3);
-    } else if (filterType === 'normal') {
-        filtered = inProgressOrders.filter(order => getDaysLeft(order.deliveryDate) > 3);
-    }
-    
-    displayInProgressOrders(filtered);
-}
-
-// Search functionality
-function handleSearch(e) {
-    const searchTerm = e.target.value.toLowerCase().trim();
-    
-    let filtered = [...inProgressOrders];
-    
-    // Apply existing filter first
-    if (currentFilter === 'urgent') {
-        filtered = filtered.filter(order => getDaysLeft(order.deliveryDate) <= 3);
-    } else if (currentFilter === 'normal') {
-        filtered = filtered.filter(order => getDaysLeft(order.deliveryDate) > 3);
-    }
-    
-    // Apply search
-    if (searchTerm !== '') {
-        filtered = filtered.filter(order => 
-            order.orderId.toLowerCase().includes(searchTerm) ||
-            order.customerName.toLowerCase().includes(searchTerm) ||
-            order.customerPhone.includes(searchTerm) ||
-            order.dressType.toLowerCase().includes(searchTerm) ||
-            (order.workerName && order.workerName.toLowerCase().includes(searchTerm)) ||
-            (order.cutterName && order.cutterName.toLowerCase().includes(searchTerm))
-        );
-    }
-    
-    displayInProgressOrders(filtered);
-}
-
-// View order details - Shows ALL 47 fields
-function viewOrderDetails(orderId) {
-    const order = allOrders.find(o => o.orderId === orderId);
-    if (!order) {
-        alert('Order not found!');
-        return;
-    }
-    
-    let details = `ORDER DETAILS (آرڈر کی تفصیلات):\n\n`;
-    details += `Order ID: ${order.orderId}\n`;
-    details += `Customer: ${order.customerName}\n`;
-    details += `Phone: ${order.customerPhone}\n`;
-    details += `Dress Type: ${order.dressType}\n`;
-    details += `Worker: ${order.workerName || 'N/A'}\n`;
-    details += `Cutter: ${order.cutterName || 'N/A'}\n`;
-    details += `Started: ${order.workStartDate || 'N/A'}\n`;
-    details += `Delivery: ${order.deliveryDate}\n`;
-    details += `Days Left: ${getDaysLeft(order.deliveryDate)} days\n\n`;
-    
-    if (order.measurements) {
-        details += `QAMEEZ & SHALWAR MEASUREMENTS:\n`;
-        details += `1. ${fieldLabels[0]}: ${order.measurements.qameez.length || 'N/A'}"\n`;
-        details += `2. ${fieldLabels[1]}: ${order.measurements.qameez.shoulder || 'N/A'}"\n`;
-        details += `3. ${fieldLabels[2]}: ${order.measurements.qameez.sleeve || 'N/A'}"\n`;
-        details += `4. ${fieldLabels[3]}: ${order.measurements.qameez.neck || 'N/A'}"\n`;
-        details += `5. ${fieldLabels[4]}: ${order.measurements.qameez.chest || 'N/A'}"\n`;
-        details += `6. ${fieldLabels[5]}: ${order.measurements.qameez.lowerHip || 'N/A'}"\n`;
-        details += `7. ${fieldLabels[6]}: ${order.measurements.qameez.bottom || 'N/A'}"\n`;
-        details += `8. ${fieldLabels[7]}: ${order.measurements.shalwar.length || 'N/A'}"\n`;
-        details += `9. ${fieldLabels[8]}: ${order.measurements.shalwar.bottom || 'N/A'}"\n\n`;
-        
-        details += `DESIGN DETAILS:\n`;
-        for (let i = 10; i <= 47; i++) {
-            const fieldKey = `field${i}`;
-            const value = order.measurements.design[fieldKey];
-            if (value && value.trim()) {
-                details += `${i}. ${fieldLabels[i-1]}: ${value}\n`;
-            }
-        }
-    }
-    
-    details += `\nFABRIC:\nType: ${order.fabricType || 'N/A'}\nColor: ${order.fabricColor || 'N/A'}\n`;
-    details += `\nPRICING:\nTotal: Rs. ${order.totalAmount.toFixed(2)}\nAdvance: Rs. ${order.advancePaid.toFixed(2)}\nRemaining: Rs. ${order.remainingAmount.toFixed(2)}\n`;
-    
-    if (order.specialNotes) {
-        details += `\nNotes: ${order.specialNotes}`;
-    }
-    
-    alert(details);
 }
 
 // Open complete order modal
